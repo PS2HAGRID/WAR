@@ -4,43 +4,97 @@ using UnityEngine;
 
 public class AIDirector : MonoBehaviour
 {
-    public Camera MainCamera;
-    public Unit[] units = null;
+
+    //debug
+    //public Unit[] units = null;
+
+    public int ID;
+    public GameObject target;
+    public GameObject unit;
+    private int unitcap;
+    public List<List<Unit>> Squads;
+    public BoxCollider boundingBox;
+
+    public AIDirector(int unitCap)
+    {
+        unitcap = unitCap;
+    }
+
+    private void Start()
+    {
+        Squads = new List<List<Unit>>();
+
+        CreateSquad(10);
+
+        //debug
+        //Squads[0].Add(units[0]);
+
+    }
 
     void Update()
     {
-        if(units == null)
+        if(Squads == null)
         {
             return;
         }
-
-        foreach (Unit unit in units)
+        if(target != null) 
         {
-            Vector3 destination;
-            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+            for(int i = 0; i < Squads.Count; i++)
             {
-                
-                Ray rey = MainCamera.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
+                Investigate(i, target);
+            }
 
-                if (Physics.Raycast(rey, out hit))
-                {
-                    destination = hit.point;
+            
+        }
+    }
 
-                    unit.destination = destination;
-                }
+    private void EngageTarget(int SquadID, GameObject target)
+    {
 
+        Ray POIonNavMesh = new Ray(target.transform.position, Vector3.down);
+        RaycastHit hit = new RaycastHit();
 
-                if (Input.GetMouseButtonDown(1))
-                {
-                    unit.doAction = unit.Engage;
-                }
-                else
-                {
-                    unit.doAction = unit.Patrol;
-                }
+        if(Physics.Raycast(POIonNavMesh,out hit))
+        {
+            Vector3 destination = hit.point;
+            foreach (Unit unit in Squads[SquadID])
+            {
+                unit.target = target;
+                unit.destination = destination;
             }
         }
     }
 
+    private void Investigate(int SquadID, GameObject target)
+    {
+        Ray POIonNavMesh = new Ray(target.transform.position, Vector3.down);
+        RaycastHit hit = new RaycastHit();
+
+        if (Physics.Raycast(POIonNavMesh, out hit))
+        {
+            Vector3 destination = hit.point;
+            foreach (Unit unit in Squads[SquadID])
+            {
+                unit.destination = destination;
+            }
+        }
+    }
+
+
+    private void CreateSquad(int numUnits)
+    {
+
+        List<Unit> currentSquad = new List<Unit>();
+
+        for (int i = 0; i < numUnits; i++)
+        {
+            Unit currentUnit = Instantiate(unit, transform).GetComponent<Unit>();
+            currentSquad.Add(currentUnit);
+            currentUnit.destination = transform.position;
+            currentUnit.tag = "Team" + ID;
+        }
+
+        Squads.Add(currentSquad);
+        Debug.Log("created squad");
+    }
 }

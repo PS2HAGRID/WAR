@@ -5,8 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - gamer
+  - Team1
+  - Team2
   - 'team 1 '
-  - team 2
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - Water
   - UI
   - Player
-  - 
+  - Target
   - 
   - 
   - 

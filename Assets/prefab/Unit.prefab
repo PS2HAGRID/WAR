@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4447736834002177984}
   - component: {fileID: 2168895657965977617}
   - component: {fileID: 9147886010233282826}
+  - component: {fileID: 7492665089670926203}
   m_Layer: 6
   m_Name: Unit
   m_TagString: 'team 1 '
@@ -30,8 +31,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 554055527873013951}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -33.164097, y: 13.958021, z: -26.403467}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -118,8 +119,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 554055527873013951}
   serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 1
+  m_Mass: 70
+  m_Drag: 120
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -150,11 +151,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 9147886010233282826}
+  target: {fileID: 0}
   ground:
     serializedVersion: 2
     m_Bits: 8
   destination: {x: 0, y: 0, z: 0}
   firingRange: 25
+  stoppingDistanceOffset: 2
+  spread: 100
 --- !u!195 &9147886010233282826
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -165,7 +169,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 20
+  m_Speed: 10
   m_Acceleration: 80
   avoidancePriority: 50
   m_AngularSpeed: 1000
@@ -177,3 +181,24 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
+--- !u!135 &7492665089670926203
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 554055527873013951}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 25
+  m_Center: {x: 0, y: 0, z: 0}
