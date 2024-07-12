@@ -15,6 +15,9 @@ public class AIDirector : MonoBehaviour
     public List<List<Unit>> Squads;
     public BoxCollider boundingBox;
 
+    HashSet<Unit> unitHashset; 
+    List<Unit> seenUnitList;
+
     public AIDirector(int unitCap)
     {
         unitcap = unitCap;
@@ -24,7 +27,7 @@ public class AIDirector : MonoBehaviour
     {
         Squads = new List<List<Unit>>();
 
-        CreateSquad(10);
+        CreateSquad(50);
 
         //debug
         //Squads[0].Add(units[0]);
@@ -46,6 +49,23 @@ public class AIDirector : MonoBehaviour
 
             
         }
+
+        CheckTargets();
+
+    }
+
+    private void CheckTargets()
+    {
+
+
+
+    }
+
+    private void CheckHashSet(HashSet<Unit> hashSet, Unit unitToCheck)
+    {
+
+
+
     }
 
     private void EngageTarget(int SquadID, GameObject target)
@@ -60,7 +80,6 @@ public class AIDirector : MonoBehaviour
             foreach (Unit unit in Squads[SquadID])
             {
                 unit.target = target;
-                unit.destination = destination;
             }
         }
     }
@@ -92,6 +111,7 @@ public class AIDirector : MonoBehaviour
             currentSquad.Add(currentUnit);
             currentUnit.destination = transform.position;
             currentUnit.tag = "Team" + ID;
+            currentUnit.parent = gameObject;
         }
 
         Squads.Add(currentSquad);

@@ -40,11 +40,9 @@ public class GameManager : MonoBehaviour
     private Transform ChooseRandomPosInArea(Transform point, BoxCollider bounds)
     {
         Vector3 extents = bounds.size * 0.5f;
-        Debug.Log(extents);
         point.localPosition = new Vector3(Random.Range(-extents.x, extents.x),
                                      Random.Range(-extents.y, extents.y),
                                      Random.Range(-extents.z, extents.z));
-        Debug.Log(point.localPosition);
         return point;
     }
 

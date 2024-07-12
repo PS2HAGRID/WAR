@@ -150,7 +150,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054f7a64f10d65440bcfccdba693c6af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parent: {fileID: 0}
   agent: {fileID: 9147886010233282826}
+  bulletPrefab: {fileID: 3764318270166747400, guid: 9643f3afc10f8f5439c23de15a1c7cc6, type: 3}
   target: {fileID: 0}
   ground:
     serializedVersion: 2
@@ -159,6 +161,9 @@ MonoBehaviour:
   firingRange: 25
   stoppingDistanceOffset: 2
   spread: 100
+  rpm: 600
+  ammoInMag: 30
+  timeToReload: 2.5
 --- !u!195 &9147886010233282826
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -6,7 +6,10 @@ using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
 {
+    public GameObject parent;
+
     public NavMeshAgent agent;
+    public GameObject bulletPrefab;
     public GameObject target;
     public LayerMask ground;
     public Vector3 destination;
@@ -16,10 +19,20 @@ public class Unit : MonoBehaviour
     public int stoppingDistanceOffset = 2;
     bool dead = false;
     Coroutine rateOfFire;
+    Coroutine deadTimer;
+    float timeBeforeDeath = 3;
+
     public float spread;
+    public int rpm = 600;
+    float timeBetweenBullets;
+    public int ammoInMag = 30;
+    int shotsFired;
+    public float timeToReload = 2.5f;
+
+
     void Start()
     {
-        
+        timeBetweenBullets = 60 / rpm;
     }
 
     public void Patrol()
@@ -28,7 +41,6 @@ public class Unit : MonoBehaviour
         agent.stoppingDistance = stoppingDistanceOffset;
         agent.isStopped = false;
         agent.SetDestination(destination);
-        Debug.Log(agent.SetDestination(destination));
     }
 
     public void Engage()
@@ -43,10 +55,14 @@ public class Unit : MonoBehaviour
             Debug.DrawRay(transform.position, transform.forward * firingRange, Color.blue);
             if(hitInfo.collider != null && hitInfo.collider.gameObject.tag == tag) 
             {
-                Debug.Log(" friendly fire ");
             }
             else
             {
+                if(hitInfo.collider == null)
+                {
+                    return;
+                }
+
                 if(hitInfo.collider.gameObject.tag != "Untagged")
                 {
                     Fire();
@@ -85,30 +101,58 @@ public class Unit : MonoBehaviour
 
         IEnumerator DoShoot()
         {
-            RaycastHit hit = new RaycastHit();
-            Ray bullet = new Ray(transform.position, Spread(transform.forward, spread));
-            if (Physics.Raycast(bullet, out hit))
+
+
+            
+            if(shotsFired < ammoInMag)
             {
-                if (hit.transform.tag != "Untagged")
-                {
-                    hit.transform.SendMessage("Hit");
-                }
+                BulletScript bullet = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(transform.rotation.eulerAngles)).GetComponent<BulletScript>();
+                bullet.speed = 1;
+                bullet.parent = gameObject;
+
+                Debug.Log("firing");
+
+                shotsFired++;
+
+                yield return new WaitForSeconds(timeBetweenBullets);
+                rateOfFire = null;
+            } 
+            else
+            {
+                Debug.Log("reloading");
+                shotsFired = 0;
+                yield return new WaitForSeconds(timeToReload);
+                rateOfFire = null;
+                Debug.Log("finished reloading");
             }
 
-
-            Debug.DrawRay(transform.position, transform.forward * 9999);
-            yield return new WaitForSeconds(0.3f);
-            rateOfFire = null;
         }
+
     }
 
     private void Hit()
     {
+        if (dead)
+        {
+            return;
+        }
+        
         Destroy(agent);
         dead = true;
         tag = "Untagged";
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.drag = 0.05f;
+        rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        rb.interpolation = RigidbodyInterpolation.None;
+        deadTimer = StartCoroutine(DoDeath());
+
+        IEnumerator DoDeath()
+        {
+            yield return new WaitForSeconds(timeBeforeDeath);
+            rb.constraints = RigidbodyConstraints.FreezeAll;
+            GetComponent<CapsuleCollider>().enabled = false;
+            deadTimer = null;
+        }
     }
 
 
@@ -146,12 +190,6 @@ public class Unit : MonoBehaviour
             doAction = Patrol;
         }
 
-
-
-
-
-
         doAction();
-        
     }
 }
